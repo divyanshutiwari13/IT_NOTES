@@ -1,0 +1,165 @@
+Deploying this on nginx 
+
+Step1:
+
+npx create-react-app my-react-app
+
+cd my-react-app
+
+npm start
+
+Project Structure:
+
+my-react-app/
+├── node_modules/
+├── public/
+│   ├── index.html
+│   └── ...
+├── src/
+│   ├── App.js
+│   ├── index.js
+│   └── ...
+├── package.json
+├── package-lock.json
+└── README.md
+
+npm run build
+
+sudo cp -r build/* /var/www/html/
+
+sudo nano /etc/nginx/sites-available/default
+
+server {
+    listen 80;
+    server_name your_domain_or_IP;  # Replace with your domain or IP address
+
+    root /var/www/html;  # Path to your build folder
+    index index.html;
+
+    location / {
+        try_files $uri /index.html;  # This is important for React routing
+    }
+}
+
+sudo systemctl restart nginx
+
+=============================================
+
+Step2:
+
+npm create vite@latest my-vite-react-app --template react
+
+
+cd my-vite-react-app
+
+
+npm install
+
+
+npm run dev
+
+localhost:5173 
+
+Project Structure:
+
+my-vite-react-app/
+├── node_modules/
+├── public/
+│   ├── index.html
+├── src/
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── ...
+├── package.json
+├── package-lock.json
+└── README.md
+
+npm run build
+
+sudo cp -r build/* /var/www/html/
+
+sudo nano /etc/nginx/sites-available/default
+
+server {
+    listen 80;
+    server_name your_domain_or_IP;  # Replace with your domain or IP address
+
+    root /var/www/html;  # Path to your build folder
+    index index.html;
+
+    location / {
+        try_files $uri /index.html;  # This is important for React routing
+    }
+}
+
+sudo systemctl restart nginx
+
+
+=============================================
+
+Step3: NextJs 
+
+npx create-next-app@latest my-nextjs-app
+
+
+cd my-nextjs-app
+
+
+/my-nextjs-app
+├── /pages
+│   └── index.js
+├── /public
+│   └── /images
+├── /styles
+│   └── Home.module.css
+├── .gitignore
+├── package.json
+├── next.config.js
+└── README.md
+
+npm run dev
+
+http://localhost:3000
+
+npm run build
+
+npm start
+
+sudo nano /etc/nginx/sites-available/nextjs
+
+server {
+    listen 80;
+    server_name your_domain_or_ip;  # Replace with your domain or public IP
+
+    location / {
+        proxy_pass http://localhost:3000;  # Point to your Next.js app running on port 3000
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # Optional: for static file serving (only needed if you exported the app as static)
+    location /_next/static/ {
+        root /var/www/my-nextjs-app;  # Set to the directory of your Next.js app
+        expires 1y;
+        add_header Cache-Control "public, immutable, max-age=31536000";
+    }
+}
+
+
+sudo ln -s /etc/nginx/sites-available/nextjs /etc/nginx/sites-enabled/
+
+sudo nginx -t
+sudo systemctl reload nginx
+
+npm install -g pm2
+
+pm2 start npm --name "nextjs-app" -- start
+
+pm2 save
+
+pm2 startup
+
+

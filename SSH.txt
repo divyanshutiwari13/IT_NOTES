@@ -1,0 +1,21 @@
+sudo apt update 
+
+sudo apt install openssh-server -y
+
+sudo systemctl enable --now ssh
+
+sudo ufw allow ssh
+
+ssh-keygen 
+
+sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.initial
+
+sudo nano /etc/ssh/sshd_config
+Port 2222  # or any port you want
+PermitRootLogin no
+PublicAutentication yes
+
+sudo systemctl restart ssh
+
+ssh -p[port_number] [user]@[remote_host]
+

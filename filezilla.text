@@ -1,0 +1,48 @@
+sudo apt install filezilla -y
+
+Step1:Ubuntu
+
+which code
+
+Open FileZilla.
+
+Go to FileZilla Settings:
+
+In the top menu, click on Edit.
+Then, select Settings from the dropdown.
+Set the Default Editor:
+
+In the Settings window, on the left sidebar, scroll down to the File editing section.
+Select File Editing under the Interface section.
+Configure the External Editor:
+
+In the File Editing settings, under Editor for remote files, select Use custom editor.
+
+In the Path to editor field, enter the following:
+
+
+/usr/bin/code
+
+This is the path to the VS Code executable on Ubuntu.
+
+================================================================================================
+
+Step2:Windows
+
+Configure FileZilla to Use VS Code as the Default Editor
+Open FileZilla.
+
+Go to FileZilla Settings:
+
+In the top menu, click on Edit.
+Then select Settings from the dropdown.
+Set the Default Editor:
+
+In the Settings window, find the File editing section in the left sidebar.
+Select the File Editing option.
+Configure the External Editor:
+
+In the File editing settings, under the Editor for remote files, choose Use custom editor.
+In the Path to editor box, enter the full path to the VS Code executable:
+
+Windows: C:\Program Files\Microsoft VS Code\Code.exe

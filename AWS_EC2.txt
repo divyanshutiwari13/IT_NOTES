@@ -1,0 +1,86 @@
+sudo apt update
+
+sudo apt install apache2 -y
+
+sudo apt install mysql-server -y
+
+sudo apt install php libapache2-mod-php php-mysql -y
+
+sudo systemctl start apache2
+sudo systemctl enable apache2
+
+sudo systemctl start mysql
+sudo systemctl enable mysql
+
+
+Set up Virtual Hosts:
+
+sudo nano /etc/apache2/sites-available/devinfotech.site.conf
+
+<VirtualHost *:80>
+    ServerAdmin webmaster@devinfotech.site
+    ServerName devinfotech.site
+    DocumentRoot /var/www/html/devinfotech.site/wordpress
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+
+<VirtualHost *:80>
+    ServerAdmin webmaster@devinfotech.site
+    ServerName joomla.devinfotech.site
+    DocumentRoot /var/www/html/devinfotech.site/joomla
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+
+
+
+sudo apt install certbot python3-certbot-apache -y
+
+
+sudo certbot --apache -d devinfotech.site -d www.devinfotech.site
+
+
+sudo crontab -e
+
+0 0,12 * * * certbot renew --quiet
+
+
+Add a redirect rule to force HTTP to HTTPS:
+
+#Update the VirtualHost *:80 section like this:
+
+
+<VirtualHost *:80>
+    ServerAdmin webmaster@devinfotech.site
+    ServerName devinfotech.site
+    Redirect permanent / https://devinfotech.site/
+</VirtualHost>
+
+
+sudo systemctl restart apache2
+
+
+
+Open the Apache site configuration file:
+
+sudo nano /etc/apache2/sites-available/devinfotech.site.conf
+You should see a section like this for SSL:
+
+<VirtualHost *:443>
+    ServerAdmin webmaster@devinfotech.site
+    ServerName devinfotech.site
+    DocumentRoot /var/www/html/devinfotech.site/wordpress
+
+    SSLEngine on
+    SSLCertificateFile /etc/letsencrypt/live/devinfotech.site/fullchain.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/devinfotech.site/privkey.pem
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+This configuration enables SSL for devinfotech.site on port 443.
+
+Restart Apache to apply the changes:
+
+sudo systemctl restart apache2

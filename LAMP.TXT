@@ -1,0 +1,97 @@
+sudo apt update
+
+sudo apt install curl wget unzip vim -y
+
+sudo apt  install apache2 && sudo systemctl start apache2 && sudo systemctl enable apache2
+
+sudo apt install mysql-server -y
+
+sudo mysql -u root
+
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'ntf12345';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+EXIT;
+
+sudo apt install php libapache2-mod-php php-mysql php-cli php-xml php-mbstring php-curl php-zip php-gd 
+php-bcmath php-json php-imagick -y
+
+echo "<?php phpinfo(); ?>" | sudo tee /var/www/html/info.php
+
+sudo apt install phpmyadmin -y
+
+sudo ln -s /usr/share/phpmyadmin /var/www/html/phpmyadmin
+
+sudo nano /etc/apache2/apache2.conf
+
+<Directory /var/www/>
+    Options Indexes FollowSymLinks
+    AllowOverride All
+    Require all granted
+</Directory>
+
+sudo chown -R www-data:www-data /var/www/html
+
+sudo chmod -R 755 /var/www/html
+
+sudo find /var/www/html -type f -exec chmod 644 {} \;
+
+
+sudo nano /etc/apache2/sites-available/000-default.conf
+<Directory /var/www/html>
+    Options Indexes FollowSymLinks
+    AllowOverride All
+    Require all granted
+</Directory>
+
+===========================================================
+<VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/html/projects/laravel-app/public
+    ServerName laravel.local
+
+    <Directory /var/www/html/projects/laravel-app/public>
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+===========================================================
+
+sudo a2ensite 000-default.conf
+sudo a2enmod rewrite
+sudo systemctl restart apache2
+
+sudo chown -R www-data:www-data /var/www/html/project_name
+
+sudo chmod -R 755 /var/www/html/project_name
+
+sudo find /var/www/html/project_name -type f -exec chmod 644 {} \;
+
+============================================================
+
+                        Composer
+
+sudo apt install curl php-cli php-mbstring unzip
+
+curl -sS https://getcomposer.org/installer | php
+
+sudo mv composer.phar /usr/local/bin/composer
+
+composer –version
+
+=========================================================
+
+                        SSL 
+
+sudo apt update
+sudo apt install certbot python3-certbot-apache -y
+sudo certbot --apache
+sudo systemctl status certbot.timer
+sudo certbot renew --dry-run
+
+SSL checker : https://www.ssllabs.com/ssltest/
+
+=======================================================

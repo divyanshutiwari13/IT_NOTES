@@ -1,0 +1,26 @@
+
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+nvm install 22
+
+node -v 
+
+npm -v 
+
+# Defualt node version select
+
+nvm alias default 20
+
+# use nvm version 
+
+nvm use 20
+
+sudo npm install -g pm2
+
+pm2 -v 
+
+
